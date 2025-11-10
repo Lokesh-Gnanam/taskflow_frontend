@@ -1,6 +1,6 @@
-// src/components/TaskForm.jsx
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { taskAPI } from '../api';
 import './TaskForm.css';
 
 const TaskForm = ({ onTaskAdded, apiStatus }) => {
@@ -59,20 +59,8 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
     setErrors([]);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/tasks/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create task');
-      }
+      // ✅ CORRECT: Use taskAPI instead of hardcoded URL
+      await taskAPI.createTask(formData);
 
       await Swal.fire({
         title: 'Success!',

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { taskAPI } from '../api';
 import './Home.css';
 
 const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
@@ -28,26 +29,16 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
     if (result.isConfirmed) {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/tasks/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        // ✅ CORRECT: Use taskAPI instead of hardcoded URL
+        await taskAPI.deleteTask(id);
 
-        if (response.ok) {
-          onTaskUpdate();
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'Your task has been deleted.',
-            icon: 'success',
-            confirmButtonColor: '#2EC4B6'
-          });
-        } else {
-          throw new Error('Failed to delete task');
-        }
+        onTaskUpdate();
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Your task has been deleted.',
+          icon: 'success',
+          confirmButtonColor: '#2EC4B6'
+        });
       } catch (error) {
         console.error('Error deleting task:', error);
         Swal.fire({
@@ -66,43 +57,20 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
   const updateTaskStatus = async (taskId, newStatus, taskTitle) => {
     setCompletingTask(taskId);
     try {
-      const token = localStorage.getItem('token');
+      // ✅ CORRECT: Use taskAPI instead of hardcoded URL
+      await taskAPI.updateTaskStatus(taskId, newStatus);
       
-      // Debug log to see what we're sending
-      console.log('Updating task:', taskId, 'to status:', newStatus);
+      onTaskUpdate();
       
-      const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/tasks/${taskId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
+      const statusText = newStatus === 'COMPLETED' ? 'completed' : 
+                        newStatus === 'IN_PROGRESS' ? 'in progress' : 'pending';
+      
+      Swal.fire({
+        title: 'Status Updated! 🎉',
+        text: `"${taskTitle}" has been marked as ${statusText}.`,
+        icon: 'success',
+        confirmButtonColor: '#2EC4B6'
       });
-
-      console.log('Response status:', response.status);
-      
-      if (response.ok) {
-        const updatedTask = await response.json();
-        console.log('Task updated successfully:', updatedTask);
-        
-        onTaskUpdate();
-        
-        const statusText = newStatus === 'COMPLETED' ? 'completed' : 
-                          newStatus === 'IN_PROGRESS' ? 'in progress' : 'pending';
-        
-        Swal.fire({
-          title: 'Status Updated! 🎉',
-          text: `"${taskTitle}" has been marked as ${statusText}.`,
-          icon: 'success',
-          confirmButtonColor: '#2EC4B6'
-        });
-      } else {
-        // Get error message from response
-        const errorData = await response.json();
-        console.error('Server error:', errorData);
-        throw new Error(errorData.error || `Failed to update task status: ${response.status}`);
-      }
     } catch (error) {
       console.error('Error updating task status:', error);
       Swal.fire({
@@ -120,36 +88,17 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
   const markTaskComplete = async (taskId, taskTitle) => {
     setCompletingTask(taskId);
     try {
-      const token = localStorage.getItem('token');
+      // ✅ CORRECT: Use taskAPI instead of hardcoded URL
+      await taskAPI.markTaskComplete(taskId);
       
-      console.log('Marking task as complete:', taskId);
+      onTaskUpdate();
       
-      const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/tasks/${taskId}/complete`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+      Swal.fire({
+        title: 'Task Completed! 🎉',
+        text: `"${taskTitle}" has been marked as completed.`,
+        icon: 'success',
+        confirmButtonColor: '#2EC4B6'
       });
-
-      console.log('Complete response status:', response.status);
-      
-      if (response.ok) {
-        const completedTask = await response.json();
-        console.log('Task marked complete:', completedTask);
-        
-        onTaskUpdate();
-        
-        Swal.fire({
-          title: 'Task Completed! 🎉',
-          text: `"${taskTitle}" has been marked as completed.`,
-          icon: 'success',
-          confirmButtonColor: '#2EC4B6'
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to mark task complete: ${response.status}`);
-      }
     } catch (error) {
       console.error('Error marking task complete:', error);
       Swal.fire({

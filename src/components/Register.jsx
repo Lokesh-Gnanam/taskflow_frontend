@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { authAPI } from '../api';
 import './Auth.css';
 
 const Register = ({ onRegister }) => {
@@ -52,40 +53,29 @@ const Register = ({ onRegister }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role
-        })
+      // ✅ CORRECT: Use authAPI instead of hardcoded URL
+      const data = await authAPI.register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
       });
 
-      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      await Swal.fire({
+        title: 'Welcome Aboard! 🎉',
+        text: `Account created successfully for ${data.user.firstName}`,
+        icon: 'success',
+        confirmButtonColor: '#2EC4B6',
+        background: 'var(--surface-color)',
+        color: 'var(--text-primary)'
+      });
 
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        await Swal.fire({
-          title: 'Welcome Aboard! 🎉',
-          text: `Account created successfully for ${data.user.firstName}`,
-          icon: 'success',
-          confirmButtonColor: '#2EC4B6',
-          background: 'var(--surface-color)',
-          color: 'var(--text-primary)'
-        });
-
-        onRegister(data.user);
-        navigate('/dashboard');
-      } else {
-        throw new Error(data.error || 'Registration failed');
-      }
+      onRegister(data.user);
+      navigate('/dashboard');
     } catch (error) {
       await Swal.fire({
         title: 'Registration Failed!',
@@ -184,7 +174,6 @@ const Register = ({ onRegister }) => {
               className="form-select"
             >
               <option value="USER">👤 Regular User</option>
-
             </select>
           </div>
 

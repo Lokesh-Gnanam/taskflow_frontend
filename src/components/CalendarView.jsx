@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { taskAPI } from '../api';
 import './CalendarView.css';
 
-const CalendarView = ({ tasks, onTaskUpdate, apiBaseUrl }) => {
+const CalendarView = ({ tasks, onTaskUpdate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const getDaysInMonth = (date) => {
@@ -63,13 +64,8 @@ const CalendarView = ({ tasks, onTaskUpdate, apiBaseUrl }) => {
 
     if (result.isConfirmed) {
       try {
-        const response = await fetch(`${apiBaseUrl}/api/tasks/${taskId}`, {
-          method: 'DELETE'
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete task');
-        }
+        // ✅ CORRECT: Use taskAPI instead of hardcoded URL
+        await taskAPI.deleteTask(taskId);
 
         onTaskUpdate();
         Swal.fire({

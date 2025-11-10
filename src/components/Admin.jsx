@@ -1,6 +1,6 @@
-// src/components/Admin.jsx
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { adminAPI } from '../api';
 import './Admin.css';
 
 const Admin = () => {
@@ -19,38 +19,22 @@ const Admin = () => {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      const response = await fetch('https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/admin/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+      // ✅ CORRECT: Use adminAPI instead of hardcoded URL
+      const userData = await adminAPI.getUsers();
+      
+      console.log('Fetched users:', userData);
+      setUsers(userData);
+      
+      // Calculate stats
+      const activeUsers = userData.filter(user => user.active === true).length;
+      const adminUsers = userData.filter(user => user.role === 'ADMIN').length;
+      
+      setStats({
+        totalUsers: userData.length,
+        activeUsers: activeUsers,
+        adminUsers: adminUsers,
+        inactiveUsers: userData.length - activeUsers
       });
-
-      if (response.ok) {
-        const userData = await response.json();
-        console.log('Fetched users:', userData);
-        setUsers(userData);
-        
-        // Calculate stats
-        const activeUsers = userData.filter(user => user.active === true).length;
-        const adminUsers = userData.filter(user => user.role === 'ADMIN').length;
-        
-        setStats({
-          totalUsers: userData.length,
-          activeUsers: activeUsers,
-          adminUsers: adminUsers,
-          inactiveUsers: userData.length - activeUsers
-        });
-      } else {
-        const errorText = await response.text();
-        console.error('Server response:', errorText);
-        throw new Error(`Failed to fetch users: ${response.status}`);
-      }
     } catch (error) {
       console.error('Error fetching users:', error);
       Swal.fire({
@@ -80,8 +64,9 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
+        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
         const token = localStorage.getItem('token');
-        const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/admin/users/${userId}/status`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}/status`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -128,8 +113,9 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
+        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
         const token = localStorage.getItem('token');
-        const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/admin/users/${userId}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -160,102 +146,101 @@ const Admin = () => {
     }
   };
 
-  // In your Admin.jsx, update the handlePromoteToAdmin function:
+  const handlePromoteToAdmin = async (userId, userName) => {
+    const result = await Swal.fire({
+      title: 'Promote to Admin?',
+      text: `Do you want to promote "${userName}" to Administrator role?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#5D2E8C',
+      cancelButtonColor: '#6C757D',
+      confirmButtonText: 'Yes, promote!'
+    });
 
-const handlePromoteToAdmin = async (userId, userName) => {
-  const result = await Swal.fire({
-    title: 'Promote to Admin?',
-    text: `Do you want to promote "${userName}" to Administrator role?`,
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonColor: '#5D2E8C',
-    cancelButtonColor: '#6C757D',
-    confirmButtonText: 'Yes, promote!'
-  });
-
-  if (result.isConfirmed) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/admin/users/${userId}/role`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ role: 'ADMIN' })
-      });
-
-      if (response.ok) {
-        await Swal.fire({
-          title: 'Promoted!',
-          text: `User "${userName}" is now an Administrator.`,
-          icon: 'success',
-          confirmButtonColor: '#2EC4B6'
+    if (result.isConfirmed) {
+      try {
+        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}/role`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ role: 'ADMIN' })
         });
-        fetchUsers();
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to promote user');
-      }
-    } catch (error) {
-      console.error('Error promoting user:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: error.message || 'Failed to promote user',
-        icon: 'error',
-        confirmButtonColor: '#FF6666'
-      });
-    }
-  }
-};
 
-// Also add a demote function for completeness:
-const handleDemoteToUser = async (userId, userName) => {
-  const result = await Swal.fire({
-    title: 'Demote to User?',
-    text: `Do you want to demote "${userName}" from Administrator to regular User role?`,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#FF6666',
-    cancelButtonColor: '#6C757D',
-    confirmButtonText: 'Yes, demote!'
-  });
-
-  if (result.isConfirmed) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io/api/admin/users/${userId}/role`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ role: 'USER' })
-      });
-
-      if (response.ok) {
-        await Swal.fire({
-          title: 'Demoted!',
-          text: `User "${userName}" is now a regular User.`,
-          icon: 'success',
-          confirmButtonColor: '#2EC4B6'
+        if (response.ok) {
+          await Swal.fire({
+            title: 'Promoted!',
+            text: `User "${userName}" is now an Administrator.`,
+            icon: 'success',
+            confirmButtonColor: '#2EC4B6'
+          });
+          fetchUsers();
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to promote user');
+        }
+      } catch (error) {
+        console.error('Error promoting user:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: error.message || 'Failed to promote user',
+          icon: 'error',
+          confirmButtonColor: '#FF6666'
         });
-        fetchUsers();
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to demote user');
       }
-    } catch (error) {
-      console.error('Error demoting user:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: error.message || 'Failed to demote user',
-        icon: 'error',
-        confirmButtonColor: '#FF6666'
-      });
     }
-  }
-};
+  };
+
+  const handleDemoteToUser = async (userId, userName) => {
+    const result = await Swal.fire({
+      title: 'Demote to User?',
+      text: `Do you want to demote "${userName}" from Administrator to regular User role?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#FF6666',
+      cancelButtonColor: '#6C757D',
+      confirmButtonText: 'Yes, demote!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}/role`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ role: 'USER' })
+        });
+
+        if (response.ok) {
+          await Swal.fire({
+            title: 'Demoted!',
+            text: `User "${userName}" is now a regular User.`,
+            icon: 'success',
+            confirmButtonColor: '#2EC4B6'
+          });
+          fetchUsers();
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to demote user');
+        }
+      } catch (error) {
+        console.error('Error demoting user:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: error.message || 'Failed to demote user',
+          icon: 'error',
+          confirmButtonColor: '#FF6666'
+        });
+      }
+    }
+  };
 
   const getRoleBadge = (role) => {
     return role === 'ADMIN' 
