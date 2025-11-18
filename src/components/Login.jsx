@@ -19,44 +19,66 @@ const Login = ({ onLogin }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  // In your Login.jsx - Update the handleSubmit function
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const data = await authAPI.login(formData);
-      
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-      await Swal.fire({
-        title: 'Welcome Back! 🎉',
-        text: `Successfully logged in as ${data.user.firstName}`,
-        icon: 'success',
-        confirmButtonColor: '#2EC4B6',
-        background: 'var(--surface-color)',
-        color: 'var(--text-primary)'
-      });
+  try {
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Request timeout. Backend might be starting up.')), 10000)
+    );
 
-      onLogin(data.user);
-      
-      // Redirect based on role
-      if (data.user.role === 'ADMIN') {
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      await Swal.fire({
-        title: 'Login Failed!',
-        text: error.message || 'Invalid email or password',
-        icon: 'error',
-        confirmButtonColor: '#FF6666'
-      });
-    } finally {
-      setLoading(false);
+    const loginPromise = authAPI.login(formData);
+    
+    const data = await Promise.race([loginPromise, timeoutPromise]);
+    
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    
+    await Swal.fire({
+      title: 'Welcome Back! 🎉',
+      text: `Successfully logged in as ${data.user.firstName}`,
+      icon: 'success',
+      confirmButtonColor: '#2EC4B6',
+      background: 'var(--surface-color)',
+      color: 'var(--text-primary)'
+    });
+
+    onLogin(data.user);
+    
+    // Redirect based on role
+    if (data.user.role === 'ADMIN') {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
     }
-  };
+  } catch (error) {
+    console.error('Login error:', error);
+    
+    let errorMessage = error.message || 'Invalid email or password';
+    
+    // Specific timeout message
+    if (error.message.includes('timeout')) {
+      errorMessage = 'Backend is starting up. Please try again in a few seconds.';
+    }
+    
+    // Network error
+    if (error.message.includes('Failed to fetch')) {
+      errorMessage = 'Cannot connect to server. Please check your internet connection or try again later.';
+    }
+
+    await Swal.fire({
+      title: 'Login Failed!',
+      text: errorMessage,
+      icon: 'error',
+      confirmButtonColor: '#FF6666'
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   
 

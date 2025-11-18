@@ -1,4 +1,4 @@
-// src/App.js
+// src/App.jsx - Updated version
 import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
@@ -22,20 +22,9 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [backendOnline, setBackendOnline] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [backendChecked, setBackendChecked] = useState(false);
 
-  // Wrap fetchUserTasks in useCallback to avoid dependency issues
-  const fetchUserTasks = useCallback(async () => {
-    if (!backendOnline) return;
-    
-    try {
-      const tasksData = await taskAPI.getTasks();
-      setTasks(tasksData);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    }
-  }, [backendOnline]);
-
-  // Load user from storage
+  // Load user from storage immediately without waiting for backend
   const loadUserFromStorage = useCallback(() => {
     const savedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
@@ -47,22 +36,56 @@ function App() {
     return false;
   }, []);
 
-  // Check backend status on app start
+  // Fetch tasks only after we know user is logged in
+  const fetchUserTasks = useCallback(async () => {
+    if (!user) return;
+    
+    try {
+      console.log('Fetching tasks for user...');
+      const tasksData = await taskAPI.getTasks();
+      setTasks(tasksData);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      setBackendOnline(false);
+    }
+  }, [user]);
+
+  // Check backend status in background - don't block UI
   useEffect(() => {
-    const initializeApp = async () => {
-      const isOnline = await healthAPI.checkBackend();
-      setBackendOnline(isOnline);
-      
-      const userLoaded = loadUserFromStorage();
-      if (userLoaded) {
-        await fetchUserTasks();
+    const checkBackendStatus = async () => {
+      try {
+        const isOnline = await healthAPI.checkBackend();
+        setBackendOnline(isOnline);
+        console.log('Backend status:', isOnline ? 'Online' : 'Offline');
+      } catch (error) {
+        console.log('Backend is offline');
+        setBackendOnline(false);
+      } finally {
+        setBackendChecked(true);
       }
-      
-      setLoading(false);
     };
 
-    initializeApp();
-  }, [loadUserFromStorage, fetchUserTasks]);
+    // Don't wait for backend check to show the app
+    const userLoaded = loadUserFromStorage();
+    
+    // Start backend check but don't wait for it
+    checkBackendStatus();
+    
+    // Set loading to false immediately if no user, or after minimal delay if user exists
+    if (!userLoaded) {
+      setLoading(false);
+    } else {
+      // Brief loading state for logged-in users
+      setTimeout(() => setLoading(false), 500);
+    }
+  }, [loadUserFromStorage]);
+
+  // Fetch tasks when user is set and backend is checked
+  useEffect(() => {
+    if (user && backendChecked) {
+      fetchUserTasks();
+    }
+  }, [user, backendChecked, fetchUserTasks]);
 
   // Apply dark mode
   useEffect(() => {
@@ -75,12 +98,12 @@ function App() {
 
   const handleLogin = (userData) => {
     setUser(userData);
-    fetchUserTasks();
+    // Tasks will be fetched automatically by the useEffect
   };
 
   const handleRegister = (userData) => {
     setUser(userData);
-    fetchUserTasks();
+    // Tasks will be fetched automatically by the useEffect
   };
 
   const handleLogout = () => {
@@ -91,11 +114,15 @@ function App() {
   };
 
   const handleTaskUpdate = () => {
-    fetchUserTasks();
+    if (backendOnline) {
+      fetchUserTasks();
+    }
   };
 
   const handleTaskAdded = () => {
-    fetchUserTasks();
+    if (backendOnline) {
+      fetchUserTasks();
+    }
   };
 
   // Protected Route Component
@@ -144,7 +171,7 @@ function App() {
         
         <main className="main-content">
           <Routes>
-            {/* Public Routes */}
+            {/* Public Routes - Show immediately */}
             <Route 
               path="/login" 
               element={
@@ -193,7 +220,6 @@ function App() {
                   <CalendarView 
                     tasks={tasks}
                     onTaskUpdate={handleTaskUpdate}
-                    apiBaseUrl="https://8080-ffaecebdaabfcecbbeafafdaebbadedff.premiumproject.examly.io"
                   />
                 </ProtectedRoute>
               } 
