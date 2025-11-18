@@ -58,21 +58,136 @@
 .floating-emoji:nth-child(9) { bottom: 30%; left: 20%; animation-delay: 8s; }
 .floating-emoji:nth-child(10) { top: 20%; left: 8%; animation-delay: 9s; }
 
-/* Updated auth-card to be wider */
+/* Updated auth-card to be wider for register page */
 .auth-card {
   background: rgba(255, 255, 255, 0.95);
   padding: 2.5rem;
-  border-radius: 20px ; 
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px !important; 
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   width: 90%;
- 
-  max-width: 500px; /* Increased from 420px to 500px */
+  max-width: 500px;
   position: relative;
   z-index: 2;
-  backdrop-filter: blur(15px);
-  margin: 0 auto;
+  backdrop-filter: blur(20px);
+  margin: 40px auto;
   transform: translateZ(0);
+  transition: all 0.4s ease;
+}
+
+/* Specific styles for register page */
+.auth-container:has(.auth-card[data-page="register"]) {
+  align-items: flex-start;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.auth-card[data-page="register"] {
+  max-width: 520px;
+  margin: 20px auto;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(25px);
+}
+
+.auth-card[data-page="register"]:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+}
+
+/* Register page specific header styling */
+.auth-card[data-page="register"] .auth-header {
+  margin-bottom: 2.5rem;
+}
+
+.auth-card[data-page="register"] .auth-title {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #5D2E8C, #2EC4B6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+
+.auth-card[data-page="register"] .auth-subtitle {
+  font-size: 1.05rem;
+  color: #4A5568;
+  font-weight: 500;
+}
+
+/* Register form specific styling */
+.auth-card[data-page="register"] .auth-form {
+  gap: 1.5rem;
+}
+
+.auth-card[data-page="register"] .form-group {
+  margin-bottom: 0.5rem;
+}
+
+.auth-card[data-page="register"] .form-input,
+.auth-card[data-page="register"] .form-select {
+  padding: 1rem 1.2rem;
+  border: 2px solid #EDF2F7;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.auth-card[data-page="register"] .form-input:focus,
+.auth-card[data-page="register"] .form-select:focus {
+  border-color: #5D2E8C;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 4px rgba(93, 46, 140, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Admin key field styling for register page */
+.auth-card[data-page="register"] .form-input[type="password"],
+.auth-card[data-page="register"] .form-input[type="text"] {
+  border-left: 4px solid transparent;
+}
+
+.auth-card[data-page="register"] .form-input[style*="border-color: #2EC4B6"] {
+  border-left-color: #2EC4B6 !important;
+  background: rgba(46, 196, 182, 0.05);
+}
+
+.auth-card[data-page="register"] .form-input[style*="border-color: #FF6666"] {
+  border-left-color: #FF6666 !important;
+  background: rgba(255, 102, 102, 0.05);
+}
+
+/* Register button specific styling */
+.auth-card[data-page="register"] .auth-btn {
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #5D2E8C, #2EC4B6);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card[data-page="register"] .auth-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.auth-card[data-page="register"] .auth-btn:hover::before {
+  left: 100%;
+}
+
+.auth-card[data-page="register"] .auth-btn:hover:not(.loading) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(93, 46, 140, 0.5);
 }
 
 .auth-header {
@@ -148,7 +263,7 @@
   width: 100%;
   padding: 0.9rem 1.1rem;
   border: 2px solid #E2E8F0;
-  border-radius: 10px !important; /* Force border radius */
+  border-radius: 10px !important;
   background-color: rgba(255, 255, 255, 0.9);
   color: #2D3748;
   font-size: 0.95rem;
@@ -255,7 +370,7 @@
   background: linear-gradient(135deg, #5D2E8C, #2EC4B6);
   color: white;
   border: none;
-  border-radius: 10px !important; /* Force border radius */
+  border-radius: 10px !important;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -315,7 +430,7 @@
   padding: 0.75rem 1rem;
   border: 2px solid #E2E8F0;
   background: transparent;
-  border-radius: 10px !important; /* Force border radius */
+  border-radius: 10px !important;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -354,7 +469,7 @@
   background: linear-gradient(135deg, #FF6666, #FF8E8E);
   color: white;
   border: none;
-  border-radius: 10px !important; /* Force border radius */
+  border-radius: 10px !important;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -457,6 +572,17 @@ html, body {
 .floating-icon:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
 .floating-icon:nth-child(3) { bottom: 15%; left: 20%; animation-delay: 4s; }
 
+/* Success animation for form completion */
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.auth-card.success {
+  animation: successPulse 0.6s ease-in-out;
+}
+
 @media (max-width: 768px) {
   .auth-container {
     padding: 15px;
@@ -464,8 +590,14 @@ html, body {
 
   .auth-card {
     padding: 2rem 1.5rem;
-    border-radius: 18px !important; /* Force border radius */
-    max-width: 450px; /* Adjusted for mobile */
+    border-radius: 18px !important;
+    max-width: 450px;
+  }
+
+  .auth-card[data-page="register"] {
+    padding: 2.5rem 2rem;
+    margin: 20px auto;
+    max-width: 480px;
   }
 
   .auth-logo h1 {
@@ -477,7 +609,7 @@ html, body {
   }
 
   .form-row {
-    grid-template-columns: 1fr; /* Single column on mobile */
+    grid-template-columns: 1fr;
     gap: 0.8rem;
   }
 
@@ -494,8 +626,14 @@ html, body {
 @media (max-width: 480px) {
   .auth-card {
     padding: 1.5rem 1.25rem;
-    border-radius: 16px !important; /* Force border radius */
-    max-width: 380px; /* Adjusted for smaller mobile */
+    border-radius: 16px !important;
+    max-width: 380px;
+  }
+
+  .auth-card[data-page="register"] {
+    padding: 2rem 1.5rem;
+    margin: 15px auto;
+    max-width: 400px;
   }
 
   .auth-header {
@@ -512,6 +650,10 @@ html, body {
 
   .auth-title {
     font-size: 1.4rem;
+  }
+
+  .auth-card[data-page="register"] .auth-title {
+    font-size: 1.5rem;
   }
 
   .form-input,
