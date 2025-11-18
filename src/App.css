@@ -151,6 +151,46 @@ body {
   outline-offset: 2px;
 }
 
+/* Add to your App.css */
+.app-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--background-color);
+}
+
+.loading-spinner {
+  text-align: center;
+}
+
+.loading-spinner .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--surface-color);
+  border-top: 4px solid #2EC4B6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.backend-offline {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FF6666;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .main-content {
