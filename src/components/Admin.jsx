@@ -6,6 +6,7 @@ import './Admin.css';
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updatingUser, setUpdatingUser] = useState(null);
   const [stats, setStats] = useState({
     totalUsers: 0,
     activeUsers: 0,
@@ -19,6 +20,7 @@ const Admin = () => {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       // ✅ CORRECT: Use adminAPI instead of hardcoded URL
       const userData = await adminAPI.getUsers();
       
@@ -64,29 +66,18 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
-        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}/status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ active: newStatus })
-        });
+        setUpdatingUser(userId);
+        
+        // ✅ CORRECT: Use adminAPI method
+        await adminAPI.updateUserStatus(userId, newStatus);
 
-        if (response.ok) {
-          await Swal.fire({
-            title: 'Success!',
-            text: `User ${action}d successfully`,
-            icon: 'success',
-            confirmButtonColor: '#2EC4B6'
-          });
-          fetchUsers(); // Refresh the user list
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to update user status');
-        }
+        await Swal.fire({
+          title: 'Success!',
+          text: `User ${action}d successfully`,
+          icon: 'success',
+          confirmButtonColor: '#2EC4B6'
+        });
+        fetchUsers(); // Refresh the user list
       } catch (error) {
         console.error('Error updating user:', error);
         Swal.fire({
@@ -95,6 +86,8 @@ const Admin = () => {
           icon: 'error',
           confirmButtonColor: '#FF6666'
         });
+      } finally {
+        setUpdatingUser(null);
       }
     }
   };
@@ -113,27 +106,18 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
-        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        setUpdatingUser(userId);
+        
+        // ✅ CORRECT: Use adminAPI method
+        await adminAPI.deleteUser(userId);
 
-        if (response.ok) {
-          await Swal.fire({
-            title: 'Deleted!',
-            text: 'User has been deleted successfully.',
-            icon: 'success',
-            confirmButtonColor: '#2EC4B6'
-          });
-          fetchUsers(); // Refresh the user list
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to delete user');
-        }
+        await Swal.fire({
+          title: 'Deleted!',
+          text: 'User has been deleted successfully.',
+          icon: 'success',
+          confirmButtonColor: '#2EC4B6'
+        });
+        fetchUsers(); // Refresh the user list
       } catch (error) {
         console.error('Error deleting user:', error);
         Swal.fire({
@@ -142,6 +126,8 @@ const Admin = () => {
           icon: 'error',
           confirmButtonColor: '#FF6666'
         });
+      } finally {
+        setUpdatingUser(null);
       }
     }
   };
@@ -159,29 +145,18 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
-        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}/role`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ role: 'ADMIN' })
-        });
+        setUpdatingUser(userId);
+        
+        // ✅ CORRECT: Use adminAPI method
+        await adminAPI.updateUserRole(userId, 'ADMIN');
 
-        if (response.ok) {
-          await Swal.fire({
-            title: 'Promoted!',
-            text: `User "${userName}" is now an Administrator.`,
-            icon: 'success',
-            confirmButtonColor: '#2EC4B6'
-          });
-          fetchUsers();
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to promote user');
-        }
+        await Swal.fire({
+          title: 'Promoted!',
+          text: `User "${userName}" is now an Administrator.`,
+          icon: 'success',
+          confirmButtonColor: '#2EC4B6'
+        });
+        fetchUsers();
       } catch (error) {
         console.error('Error promoting user:', error);
         Swal.fire({
@@ -190,6 +165,8 @@ const Admin = () => {
           icon: 'error',
           confirmButtonColor: '#FF6666'
         });
+      } finally {
+        setUpdatingUser(null);
       }
     }
   };
@@ -207,29 +184,18 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
-        // ✅ CORRECT: Use fetch with your API_BASE_URL from api.js
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://taskflow-backend-5o21.onrender.com'}/api/admin/users/${userId}/role`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ role: 'USER' })
-        });
+        setUpdatingUser(userId);
+        
+        // ✅ CORRECT: Use adminAPI method
+        await adminAPI.updateUserRole(userId, 'USER');
 
-        if (response.ok) {
-          await Swal.fire({
-            title: 'Demoted!',
-            text: `User "${userName}" is now a regular User.`,
-            icon: 'success',
-            confirmButtonColor: '#2EC4B6'
-          });
-          fetchUsers();
-        } else {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to demote user');
-        }
+        await Swal.fire({
+          title: 'Demoted!',
+          text: `User "${userName}" is now a regular User.`,
+          icon: 'success',
+          confirmButtonColor: '#2EC4B6'
+        });
+        fetchUsers();
       } catch (error) {
         console.error('Error demoting user:', error);
         Swal.fire({
@@ -238,6 +204,8 @@ const Admin = () => {
           icon: 'error',
           confirmButtonColor: '#FF6666'
         });
+      } finally {
+        setUpdatingUser(null);
       }
     }
   };
@@ -261,6 +229,16 @@ const Admin = () => {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const getCurrentUser = () => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  };
+
+  const isCurrentUser = (userId) => {
+    const currentUser = getCurrentUser();
+    return currentUser && currentUser.id === userId;
   };
 
   if (loading) {
@@ -317,7 +295,16 @@ const Admin = () => {
       <div className="users-section">
         <div className="section-header">
           <h2>User Management</h2>
-          <span className="user-count">{users.length} users found</span>
+          <div className="header-actions">
+            <span className="user-count">{users.length} users found</span>
+            <button 
+              className="refresh-btn"
+              onClick={fetchUsers}
+              disabled={loading}
+            >
+              {loading ? '🔄 Refreshing...' : '🔄 Refresh'}
+            </button>
+          </div>
         </div>
 
         <div className="users-table-container">
@@ -341,6 +328,9 @@ const Admin = () => {
                     <div className="user-details">
                       <div className="user-name">
                         {user.firstName} {user.lastName}
+                        {isCurrentUser(user.id) && (
+                          <span className="current-user-badge"> (You)</span>
+                        )}
                       </div>
                       <div className="user-meta">
                         <span className="user-id">ID: {user.id}</span>
@@ -374,37 +364,45 @@ const Admin = () => {
                   <td>{getStatusBadge(user.active)}</td>
                   <td className="action-buttons">
                     <div className="action-group">
-                      <button
-                        className={`action-btn ${user.active ? 'deactivate' : 'activate'}`}
-                        onClick={() => handleUserStatus(user.id, user.active, `${user.firstName} ${user.lastName}`)}
-                      >
-                        {user.active ? '⏸️ Deactivate' : '✅ Activate'}
-                      </button>
-                      
-                      {user.role !== 'ADMIN' ? (
-                        <button
-                          className="action-btn promote"
-                          onClick={() => handlePromoteToAdmin(user.id, `${user.firstName} ${user.lastName}`)}
-                        >
-                          👑 Promote to Admin
-                        </button>
+                      {/* Don't allow modifying your own account */}
+                      {!isCurrentUser(user.id) ? (
+                        <>
+                          <button
+                            className={`action-btn ${user.active ? 'deactivate' : 'activate'} ${updatingUser === user.id ? 'loading' : ''}`}
+                            onClick={() => handleUserStatus(user.id, user.active, `${user.firstName} ${user.lastName}`)}
+                            disabled={updatingUser === user.id}
+                          >
+                            {updatingUser === user.id ? '⏳ Updating...' : user.active ? '⏸️ Deactivate' : '✅ Activate'}
+                          </button>
+                          
+                          {user.role !== 'ADMIN' ? (
+                            <button
+                              className={`action-btn promote ${updatingUser === user.id ? 'loading' : ''}`}
+                              onClick={() => handlePromoteToAdmin(user.id, `${user.firstName} ${user.lastName}`)}
+                              disabled={updatingUser === user.id}
+                            >
+                              {updatingUser === user.id ? '⏳ Updating...' : '👑 Promote to Admin'}
+                            </button>
+                          ) : (
+                            <button
+                              className={`action-btn demote ${updatingUser === user.id ? 'loading' : ''}`}
+                              onClick={() => handleDemoteToUser(user.id, `${user.firstName} ${user.lastName}`)}
+                              disabled={updatingUser === user.id}
+                            >
+                              {updatingUser === user.id ? '⏳ Updating...' : '👤 Demote to User'}
+                            </button>
+                          )}
+                          
+                          <button
+                            className={`action-btn delete ${updatingUser === user.id ? 'loading' : ''}`}
+                            onClick={() => handleDeleteUser(user.id, `${user.firstName} ${user.lastName}`)}
+                            disabled={updatingUser === user.id}
+                          >
+                            {updatingUser === user.id ? '⏳ Deleting...' : '🗑️ Delete'}
+                          </button>
+                        </>
                       ) : (
-                        <button
-                          className="action-btn demote"
-                          onClick={() => handleDemoteToUser(user.id, `${user.firstName} ${user.lastName}`)}
-                        >
-                          👤 Demote to User
-                        </button>
-                      )}
-                      
-                      {/* Prevent deleting your own account */}
-                      {!user.isCurrentUser && (
-                        <button
-                          className="action-btn delete"
-                          onClick={() => handleDeleteUser(user.id, `${user.firstName} ${user.lastName}`)}
-                        >
-                          🗑️ Delete
-                        </button>
+                        <span className="current-user-note">Your account</span>
                       )}
                     </div>
                   </td>
@@ -432,17 +430,17 @@ const Admin = () => {
             onClick={fetchUsers}
             disabled={loading}
           >
-            🔄 Refresh Users
+            {loading ? '🔄 Refreshing...' : '🔄 Refresh Users'}
           </button>
           <button 
             className="quick-action-btn export"
             onClick={() => {
               // Simple export functionality
               const csvContent = "data:text/csv;charset=utf-8," 
-                + "ID,Name,Email,Role,Status,Joined\\n"
+                + "ID,Name,Email,Role,Status,Joined\n"
                 + users.map(user => 
                     `${user.id},"${user.firstName} ${user.lastName}",${user.email},${user.role},${user.active ? 'Active' : 'Inactive'},"${formatDate(user.createdAt || user.registrationDate)}"`
-                  ).join("\\n");
+                  ).join("\n");
               
               const encodedUri = encodeURI(csvContent);
               const link = document.createElement("a");
@@ -450,6 +448,7 @@ const Admin = () => {
               link.setAttribute("download", "users_export.csv");
               document.body.appendChild(link);
               link.click();
+              document.body.removeChild(link);
             }}
           >
             📊 Export to CSV
