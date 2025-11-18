@@ -8,11 +8,11 @@ const Footer = () => {
         <p className="footer-text">
           &copy; 2025 <span className="footer-highlight">TaskFlow</span>. Developed by LOKESH T
         </p>
-        <div className="footer-decoration">
-          <span>✨</span>
-          <span>🚀</span>
-          <span>🎯</span>
-        </div>
+        {/* <div className="footer-decoration">
+          <span>LOKESH T</span>
+          <span>[Full Stack Developer]</span>
+          <span></span>
+        </div> */}
       </div>
     </footer>
   );

@@ -57,7 +57,7 @@ const Navigation = ({ user, onLogout, darkMode, setDarkMode }) => {
             className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(false)}
           >
-            <span className="nav-icon">📊</span>
+            <span className="nav-icon"></span>
             Dashboard
           </Link>
           
@@ -66,7 +66,7 @@ const Navigation = ({ user, onLogout, darkMode, setDarkMode }) => {
             className={`nav-link ${isActive('/add-task') ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(false)}
           >
-            <span className="nav-icon">➕</span>
+            <span className="nav-icon"></span>
             Add Task
           </Link>
           
@@ -75,7 +75,7 @@ const Navigation = ({ user, onLogout, darkMode, setDarkMode }) => {
             className={`nav-link ${isActive('/calendar') ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(false)}
           >
-            <span className="nav-icon">📅</span>
+            <span className="nav-icon"></span>
             Calendar
           </Link>
           
@@ -85,7 +85,7 @@ const Navigation = ({ user, onLogout, darkMode, setDarkMode }) => {
               className={`nav-link ${isActive('/admin') ? 'active' : ''}`}
               onClick={() => setIsMenuOpen(false)}
             >
-              <span className="nav-icon">👑</span>
+              <span className="nav-icon"></span>
               Admin
             </Link>
           )}
@@ -105,7 +105,7 @@ const Navigation = ({ user, onLogout, darkMode, setDarkMode }) => {
                   {user?.firstName} {user?.lastName}
                 </span>
                 <span className="user-role">
-                  {user?.role === 'ADMIN' ? '👑 Admin' : '👤 User'}
+                  {user?.role === 'ADMIN' ? 'Admin' : 'User'}
                 </span>
               </div>
             </div>
