@@ -66,7 +66,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
                         newStatus === 'IN_PROGRESS' ? 'in progress' : 'pending';
       
       Swal.fire({
-        title: 'Status Updated! 🎉',
+        title: 'Status Updated!',
         text: `"${taskTitle}" has been marked as ${statusText}.`,
         icon: 'success',
         confirmButtonColor: '#2EC4B6'
@@ -94,7 +94,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
       onTaskUpdate();
       
       Swal.fire({
-        title: 'Task Completed! 🎉',
+        title: 'Task Completed!',
         text: `"${taskTitle}" has been marked as completed.`,
         icon: 'success',
         confirmButtonColor: '#2EC4B6'
@@ -191,12 +191,12 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
     // Use different endpoints based on the action
     const buttonConfig = {
       'IN_PROGRESS': { 
-        text: '🚀 Start Task', 
+        text: 'Start Task', 
         color: '#CCFF66',
         action: () => updateTaskStatus(task.id, 'IN_PROGRESS', task.title)
       },
       'COMPLETED': { 
-        text: '✅ Mark Complete', 
+        text: 'Mark Complete', 
         color: '#2EC4B6',
         action: () => markTaskComplete(task.id, task.title) // Use complete endpoint for final completion
       }
@@ -211,7 +211,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
         onClick={config.action}
         disabled={completingTask === task.id}
       >
-        {completingTask === task.id ? '⏳ Updating...' : config.text}
+        {completingTask === task.id ? 'Updating...' : config.text}
       </button>
     );
   };
@@ -337,7 +337,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
 
       {totalTasks === 0 ? (
         <div className="no-tasks">
-          <div className="no-tasks-icon">📝</div>
+          <div className="no-tasks-icon"></div>
           <h3>No tasks found</h3>
           <p>Create your first task to get started!</p>
         </div>
@@ -355,7 +355,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
 
                 <div className="task-meta">
                   <div className="task-date">
-                    <span className="date-icon">📅</span>
+                    <span className="date-icon"></span>
                     {formatDate(task.date)}
                   </div>
                 </div>
