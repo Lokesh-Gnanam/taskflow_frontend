@@ -117,7 +117,7 @@ const handleSubmit = async (e) => {
         <div className="floating-emoji">👑</div>
       </div>
 
-      <div className="auth-card">
+      <div className="auth-card" data-page="login">
         <div className="auth-header">
           <div className="auth-logo">
             <span className="logo-icon"></span>
