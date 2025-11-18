@@ -120,16 +120,16 @@ const handleSubmit = async (e) => {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <span className="logo-icon">📋</span>
+            <span className="logo-icon"></span>
             <h1>TaskFlow</h1>
           </div>
-          <h2 className="auth-title">Welcome Back! 👋</h2>
+          <h2 className="auth-title">Welcome Back!</h2>
           <p className="auth-subtitle">Sign in to manage your tasks and boost productivity</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label className="form-label">📧 Email Address</label>
+            <label className="form-label">Email Address</label>
             <input
               type="email"
               name="email"
@@ -142,7 +142,7 @@ const handleSubmit = async (e) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">🔒 Password</label>
+            <label className="form-label">Password</label>
             <input
               type="password"
               name="password"
@@ -180,7 +180,7 @@ const handleSubmit = async (e) => {
                 Signing In...
               </>
             ) : (
-              '🚀 Sign In'
+              'Sign In'
             )}
           </button>
         </form>

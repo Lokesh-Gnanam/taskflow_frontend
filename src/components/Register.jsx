@@ -160,17 +160,17 @@ const Register = ({ onRegister }) => {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <span className="logo-icon">📋</span>
+            <span className="logo-icon"></span>
             <h1>TaskFlow</h1>
           </div>
-          <h2 className="auth-title">Create Account 🚀</h2>
+          <h2 className="auth-title">Create Account</h2>
           <p className="auth-subtitle">Join thousands managing their tasks efficiently</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">👤 First Name</label>
+              <label className="form-label">First Name</label>
               <input
                 type="text"
                 name="firstName"
@@ -182,7 +182,7 @@ const Register = ({ onRegister }) => {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">👤 Last Name</label>
+              <label className="form-label">Last Name</label>
               <input
                 type="text"
                 name="lastName"
@@ -196,7 +196,7 @@ const Register = ({ onRegister }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">📧 Email Address</label>
+            <label className="form-label">Email Address</label>
             <input
               type="email"
               name="email"
@@ -209,15 +209,15 @@ const Register = ({ onRegister }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">🎯 Account Type</label>
+            <label className="form-label">Account Type</label>
             <select
               name="role"
               value={formData.role}
               onChange={handleChange}
               className="form-select"
             >
-              <option value="USER">👤 Regular User</option>
-              <option value="ADMIN">👑 Administrator</option>
+              <option value="USER">Regular User</option>
+              <option value="ADMIN">Administrator</option>
             </select>
             {formData.role === 'ADMIN' && (
               <p style={{ fontSize: '0.75rem', color: '#718096', marginTop: '0.25rem' }}>
@@ -229,7 +229,7 @@ const Register = ({ onRegister }) => {
           {formData.role === 'ADMIN' && (
             <div className="form-group">
               <label className="form-label">
-                🔑 Administrator Registration Key
+                Administrator Registration Key
                 <span style={{ fontSize: '0.75rem', color: '#718096', fontWeight: 'normal', marginLeft: '0.5rem' }}>
                   (Required for administrator registration)
                 </span>
@@ -282,7 +282,7 @@ const Register = ({ onRegister }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">🔒 Password</label>
+              <label className="form-label">Password</label>
               <input
                 type="password"
                 name="password"
@@ -294,7 +294,7 @@ const Register = ({ onRegister }) => {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">🔒 Confirm Password</label>
+              <label className="form-label">Confirm Password</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -326,7 +326,7 @@ const Register = ({ onRegister }) => {
                 Creating Account...
               </>
             ) : (
-              '🎉 Create Account'
+              'Create Account'
             )}
           </button>
         </form>
