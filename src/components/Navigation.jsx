@@ -46,7 +46,7 @@ const Navigation = ({ user, onLogout, darkMode, setDarkMode }) => {
       <div className="nav-container">
         {/* Logo */}
         <Link to="/dashboard" className="nav-logo">
-          <span className="logo-icon">📋</span>
+          <span className="logo-icon"></span>
           <span className="logo-text">TaskFlow</span>
         </Link>
 

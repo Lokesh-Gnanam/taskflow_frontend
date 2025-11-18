@@ -191,12 +191,12 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
     // Use different endpoints based on the action
     const buttonConfig = {
       'IN_PROGRESS': { 
-        text: 'Start Task', 
+        text: '🚀 Start Task', 
         color: '#CCFF66',
         action: () => updateTaskStatus(task.id, 'IN_PROGRESS', task.title)
       },
       'COMPLETED': { 
-        text: 'Mark Complete', 
+        text: '✅ Mark Complete', 
         color: '#2EC4B6',
         action: () => markTaskComplete(task.id, task.title) // Use complete endpoint for final completion
       }
@@ -211,7 +211,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
         onClick={config.action}
         disabled={completingTask === task.id}
       >
-        {completingTask === task.id ? 'Updating...' : config.text}
+        {completingTask === task.id ? '⏳ Updating...' : config.text}
       </button>
     );
   };
@@ -355,7 +355,7 @@ const Home = ({ tasks, onTaskUpdate, backendOnline }) => {
 
                 <div className="task-meta">
                   <div className="task-date">
-                    <span className="date-icon"></span>
+                    <span className="date-icon">📅</span>
                     {formatDate(task.date)}
                   </div>
                 </div>

@@ -64,7 +64,7 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
 
       await Swal.fire({
         title: 'Success!',
-        text: 'Task added successfully! 🎉',
+        text: 'Task added successfully!',
         icon: 'success',
         confirmButtonColor: '#2EC4B6',
         confirmButtonText: 'Awesome!',
@@ -96,7 +96,7 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
   return (
     <div className="task-form-container">
       <div className="form-header">
-        <h2 className="form-title">✨ Create New Task</h2>
+        <h2 className="form-title">Create New Task</h2>
         <p className="form-subtitle">Fill in the details to add a new task to your schedule</p>
 
         {apiStatus === 'error' && (
@@ -118,7 +118,7 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
 
       <form onSubmit={handleSubmit} className="task-form">
         <div className="form-group">
-          <label className="form-label">📝 Task Title *</label>
+          <label className="form-label">Task Title *</label>
           <input
             type="text"
             name="title"
@@ -132,7 +132,7 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
         </div>
 
         <div className="form-group">
-          <label className="form-label">📋 Description</label>
+          <label className="form-label">Description</label>
           <textarea
             name="description"
             value={formData.description}
@@ -146,7 +146,7 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
 
         <div className="form-row">
           <div className="form-group">
-            <label className="form-label">📅 Select Date *</label>
+            <label className="form-label">Select Date *</label>
             <input
               type="date"
               name="date"
@@ -160,7 +160,7 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">🎯 Status</label>
+            <label className="form-label">Status</label>
             <select
               name="status"
               value={formData.status}
@@ -168,9 +168,9 @@ const TaskForm = ({ onTaskAdded, apiStatus }) => {
               className="form-select"
               disabled={apiStatus === 'error'}
             >
-              <option value="PENDING">⏳ Pending</option>
-              <option value="IN_PROGRESS">🚀 In Progress</option>
-              <option value="COMPLETED">✅ Completed</option>
+              <option value="PENDING">Pending</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
             </select>
           </div>
         </div>

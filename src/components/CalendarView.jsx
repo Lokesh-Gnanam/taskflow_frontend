@@ -32,15 +32,15 @@ const CalendarView = ({ tasks, onTaskUpdate }) => {
       title: task.title,
       html: `
         <div style="text-align: left; color: var(--text-primary);">
-          <p><strong>📝 Description:</strong> ${task.description || 'No description provided'}</p>
-          <p><strong>📅 Date:</strong> ${new Date(task.date).toLocaleDateString('en-US', {
+          <p><strong>Description:</strong> ${task.description || 'No description provided'}</p>
+          <p><strong>Date:</strong> ${new Date(task.date).toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       })}</p>
-          <p><strong>🎯 Status:</strong> <span style="color: ${getStatusColor(task.status)}">${task.status}</span></p>
-          <p><strong>🆔 Task ID:</strong> ${task.id}</p>
+          <p><strong>Status:</strong> <span style="color: ${getStatusColor(task.status)}">${task.status}</span></p>
+          <p><strong>Task ID:</strong> ${task.id}</p>
         </div>
       `,
       icon: 'info',
